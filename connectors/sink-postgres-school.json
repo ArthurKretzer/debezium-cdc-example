@@ -1,0 +1,31 @@
+{
+    "name": "postgres-JDBC-sink-connector-school",
+    "config": {
+        "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+        "tasks.max": "1",
+        "topics": "postgres.school.student",
+        "connection.url": "jdbc:postgresql://postgres-replica:5432/postgres?user=postgres&password=postgres",
+        "transforms": "unwrap",
+        "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+        "transforms.unwrap.drop.tombstones": "false",
+        "auto.create": "true",
+        "insert.mode": "upsert",
+        "delete.enabled": "true",
+        "pk.fields": "id",
+        "pk.mode": "record_key",
+        "dialect.name" : "PostgreSqlDatabaseDialect",
+        "schema.name.adjustment.mode":"avro",
+        "confluent.topic.bootstrap.servers":"kafka:9092",
+        "auto.evolve": "true",
+        "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
+        "schema.history.internal.kafka.topic": "schema-changes.school",
+        "key.converter": "io.apicurio.registry.utils.converter.AvroConverter",
+        "key.converter.apicurio.registry.url": "http://apicurio-registry:8080/apis/registry/v2",
+        "key.converter.apicurio.registry.auto-register": "true",
+        "key.converter.apicurio.registry.find-latest": "true",
+        "value.converter": "io.apicurio.registry.utils.converter.AvroConverter",
+        "value.converter.apicurio.registry.url": "http://apicurio-registry:8080/apis/registry/v2",
+        "value.converter.apicurio.registry.auto-register": "true",
+        "value.converter.apicurio.registry.find-latest": "true"
+    }
+}

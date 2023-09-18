@@ -1,0 +1,28 @@
+{
+    "name": "db2-source-connector",
+    "config": {
+        "connector.class" : "io.debezium.connector.db2.Db2Connector",
+        "tasks.max" : "1",
+        "topic.prefix" : "postgres",
+        "snapshot.mode" : "initial",
+        "heartbeat.interval.ms" : "1",
+        "database.hostname" : "db2server",
+        "database.port" : "50000",
+        "database.user" : "db2inst1",
+        "database.password" : "=Password!",
+        "database.dbname" : "TESTDB",
+        "database.cdcschema": "ASNCDC",
+        "database.include.list": "TESTDB",
+        "schema.include.list": "DB2INST1",
+        "schema.history.internal.kafka.bootstrap.servers" : "kafka:9092",
+        "schema.history.internal.kafka.topic": "schema-changes.DB2INST1",
+        "key.converter": "io.apicurio.registry.utils.converter.AvroConverter",
+        "key.converter.apicurio.registry.url": "http://apicurio-registry:8080/apis/registry/v2",
+        "key.converter.apicurio.registry.auto-register": "true",
+        "key.converter.apicurio.registry.find-latest": "true",
+        "value.converter": "io.apicurio.registry.utils.converter.AvroConverter",
+        "value.converter.apicurio.registry.url": "http://apicurio-registry:8080/apis/registry/v2",
+        "value.converter.apicurio.registry.auto-register": "true",
+        "value.converter.apicurio.registry.find-latest": "true"
+    }
+}

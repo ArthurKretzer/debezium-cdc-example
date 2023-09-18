@@ -1,0 +1,29 @@
+{
+    "name": "minio-sink-connector",
+    "config": {
+        "connector.class": "io.aiven.kafka.connect.s3.AivenKafkaConnectS3SinkConnector",
+        "aws.access.key.id": "minio",
+        "aws.secret.access.key": "minio123",
+        "aws.s3.endpoint": "http://minio:9000",
+        "aws.s3.bucket.name": "raw",
+        "aws.s3.region": "us-east-1",
+        "topics": "postgres.school.student, postgres.DB2INST1.CUSTOMERS",
+        "file.compression.type": "none",
+        "flush.size": "20",
+        "format.output.type": "parquet",
+        "file.name.template": "{{topic}}/{{timestamp:unit=yyyy}}-{{timestamp:unit=MM}}-{{timestamp:unit=dd}}/{{timestamp:unit=HH}}/{{partition:padding=true}}-{{start_offset:padding=true}}.parquet",
+        "schema.name.adjustment.mode":"avro",
+        "confluent.topic.bootstrap.servers":"kafka:9092",
+        "auto.evolve": "true",
+        "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
+        "schema.history.internal.kafka.topic": "schema-changes.school",
+        "key.converter": "io.apicurio.registry.utils.converter.AvroConverter",
+        "key.converter.apicurio.registry.url": "http://apicurio-registry:8080/apis/registry/v2",
+        "key.converter.apicurio.registry.auto-register": "true",
+        "key.converter.apicurio.registry.find-latest": "true",
+        "value.converter": "io.apicurio.registry.utils.converter.AvroConverter",
+        "value.converter.apicurio.registry.url": "http://apicurio-registry:8080/apis/registry/v2",
+        "value.converter.apicurio.registry.auto-register": "true",
+        "value.converter.apicurio.registry.find-latest": "true"
+    }
+}
