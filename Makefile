@@ -41,19 +41,47 @@ status-connector-source:
 
 list-connectors: status-connector-source status-connector-sink
 
-restart-connectors:
-	curl -i -X POST localhost:8085/connectors/postgres-source-connector/restart && \
-	curl -i -X POST localhost:8085/connectors/db2-source-connector/restart && \
-	curl -i -X POST localhost:8084/connectors/postgres-JDBC-sink-connector-inventory/restart && \
-	curl -i -X POST localhost:8084/connectors/minio-sink-connector/restart && \
+restart-pg-src:
+	curl -i -X POST localhost:8085/connectors/postgres-source-connector/restart
+
+restart-db2-src:
+	curl -i -X POST localhost:8085/connectors/db2-source-connector/restart
+
+restart-src-connectors: restart-pg-src restart-db2-src
+
+restart-pg-sink-db2:
+	curl -i -X POST localhost:8084/connectors/postgres-JDBC-sink-connector-inventory/restart
+
+restart-pg-sink-pg:
 	curl -i -X POST localhost:8084/connectors/postgres-JDBC-sink-connector-school/restart
 
-delete-connectors:
-	curl -i -X DELETE localhost:8085/connectors/postgres-source-connector/ && \
-	curl -i -X DELETE localhost:8085/connectors/db2-source-connector/ && \
-	curl -i -X DELETE localhost:8084/connectors/postgres-JDBC-sink-connector-inventory/ && \
-	curl -i -X DELETE localhost:8084/connectors/minio-sink-connector/ && \
+restart-s3-sink:
+	curl -i -X POST localhost:8084/connectors/minio-sink-connector/restart
+
+restart-sink-connectors: restart-pg-sink-db2 restart-pg-sink-pg restart-s3-sink
+
+restart-connectors: restart-src-connectors restart-sink-connectors
+
+delete-db2-src:
+	curl -i -X DELETE localhost:8085/connectors/db2-source-connector/
+
+delete-pg-src:
+	curl -i -X DELETE localhost:8085/connectors/postgres-source-connector/
+
+delete-src-connectors: delete-db2-src delete-pg-src
+
+delete-pg-sink-db2:
+	curl -i -X DELETE localhost:8084/connectors/postgres-JDBC-sink-connector-inventory/
+
+delete-pg-sink-pg:
 	curl -i -X DELETE localhost:8084/connectors/postgres-JDBC-sink-connector-school/
+
+delete-s3-sink:
+	curl -i -X DELETE localhost:8084/connectors/minio-sink-connector/
+
+delete-sink-connectors: delete-pg-sink-db2 delete-pg-sink-pg delete-s3-sink
+
+delete-connectors: delete-src-connectors delete-sink-connectors
 
 monitor:
 	docker-compose exec kafka /kafka/bin/kafka-console-consumer.sh \
