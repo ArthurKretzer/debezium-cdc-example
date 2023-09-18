@@ -102,3 +102,6 @@ monitor-connector-source:
 	docker logs -f kafka-connect-source
 
 monitor-connector: monitor-connector-sink monitor-connector-source
+
+restart-datagen:
+	docker compose restart datagen
