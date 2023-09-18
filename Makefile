@@ -10,12 +10,6 @@ down-clean:
 minio-ui:
 	open http://localhost:9001
 
-pg-select:
-	docker-compose exec postgres-replica env PGOPTIONS="--search_path=school" bash -c 'psql -U postgres postgres -c "SELECT * FROM school.student;"'
-
-pg-insert:
-	docker-compose exec postgres env PGOPTIONS="--search_path=school" bash -c 'psql -U postgres postgres -c "INSERT INTO school.student VALUES (1, 'arthur');"'
-
 pg-replica:
 	docker-compose exec postgres-replica env PGOPTIONS="--search_path=school" bash -c 'psql -U postgres postgres'
 
@@ -46,6 +40,20 @@ status-connector-source:
 	curl -i -X GET -H "Accept:application/json" -H "Content-Type:application/json" localhost:8085/connectors/?expand=status
 
 list-connectors: status-connector-source status-connector-sink
+
+restart-connectors:
+	curl -i -X POST localhost:8085/connectors/postgres-source-connector/restart && \
+	curl -i -X POST localhost:8085/connectors/db2-source-connector/restart && \
+	curl -i -X POST localhost:8084/connectors/postgres-JDBC-sink-connector-inventory/restart && \
+	curl -i -X POST localhost:8084/connectors/minio-sink-connector/restart && \
+	curl -i -X POST localhost:8084/connectors/postgres-JDBC-sink-connector-school/restart
+
+delete-connectors:
+	curl -i -X DELETE localhost:8085/connectors/postgres-source-connector/ && \
+	curl -i -X DELETE localhost:8085/connectors/db2-source-connector/ && \
+	curl -i -X DELETE localhost:8084/connectors/postgres-JDBC-sink-connector-inventory/ && \
+	curl -i -X DELETE localhost:8084/connectors/minio-sink-connector/ && \
+	curl -i -X DELETE localhost:8084/connectors/postgres-JDBC-sink-connector-school/
 
 monitor:
 	docker-compose exec kafka /kafka/bin/kafka-console-consumer.sh \
